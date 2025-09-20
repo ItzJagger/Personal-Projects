@@ -1,3 +1,5 @@
+#Blackjack game - Unfinished but playable
+
 import pygame 
 import sys
 import random 

@@ -1,3 +1,5 @@
+#Poker game - Unfinished
+
 import pygame 
 import sys
 import random 
