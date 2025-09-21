@@ -3,6 +3,7 @@
 import pygame 
 import sys
 import random 
+from collections import Counter
 pygame.init()
 
 #Screen
@@ -39,10 +40,10 @@ cardpoints = {
     "8": 8, 
     "9": 9,
     "10": 10,
-    "J": 10,
-    "Q": 10,
-    "K": 10,
-    "A": 11
+    "J": 11,
+    "Q": 12,
+    "K": 13,
+    "A": 14
 }
 #class for cards
 class card:
@@ -131,6 +132,20 @@ dealery   = 150
 def nextdealerpos(nalready):
     return (dealerx0 + nalready * (cardw + dealergap), dealery)
 
+
+def playerpairs(playercards, dealercards):
+    hole = [c.value for c in playercards]
+    board = [c.value for c in dealercards]
+    result = []
+    if len(hole) >= 2 and hole[0] == hole[1]:
+        result.append(hole[0])
+    for r in dict.fromkeys(hole):  
+        if r not in result and r in board:
+            result.append(r)
+
+    return result  
+
+
 #start message
 message = "Welcome to Poker - By Jackson Blellock"
 gamestate = "start" 
@@ -162,10 +177,6 @@ while True:
                     gamestate = "results"
             elif gamestate == "results":
                 pass
-
-    if gamestate == "dealer":
-
-        gamestate = "results"
 
     # Drawing
     # Title
@@ -214,5 +225,25 @@ while True:
             pygame.draw.rect(screen, (0, 0, 0), checkbutton, 2, border_radius=12)
             hittxt = buttonfont.render("Check", True, (0, 0, 0))
             screen.blit(hittxt, (checkbutton.centerx - hittxt.get_width() // 2, checkbutton.centery - hittxt.get_height() // 2))
+
+        elif gamestate == "results":
+            # Player 1
+            p1pairs = playerpairs(currentcardsplayer, currentcardsdealer)
+            if len(p1pairs) >= 2:
+                txt = f"P1 has Two Pair: {p1pairs[0]} and {p1pairs[1]}"
+            elif len(p1pairs) == 1:
+                txt = f"P1 has Pair of {p1pairs[0]}"
+            label = buttonfont.render(txt, True, (0,0,0))
+            screen.blit(label, (WIDTH // 2 - label.get_width() // 2, 320))
+
+            # Player 2
+            p2pairs = playerpairs(currentcardsplayer2, currentcardsdealer)
+            if len(p2pairs) >= 2:
+                txt2 = f"P2 has Two Pair: {p2pairs[0]} and {p2pairs[1]}"
+            elif len(p2pairs) == 1:
+                txt2 = f"P2 has Pair of {p2pairs[0]}"
+            label2 = buttonfont.render(txt2, True, (0,0,0))
+            screen.blit(label2, (WIDTH // 2 - label2.get_width() // 2, 360))
+
 
     pygame.display.flip()
